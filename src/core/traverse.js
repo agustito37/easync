@@ -1,14 +1,15 @@
 /*
   queue tree traversal mutation
-  input  node : { children, ...otherProps }
-  output node : { child, sibling, parent, ...otherProps }
+  input  node : { children, props }
+  output node : { child, sibling, parent, ...props }
 */
-export const toLinkedTree = (rootNode) => {
+export const jsxToLinkedTree = (rootNode) => {
   const queue = [rootNode];
 
   while(queue.length) {
     const current = queue.shift();
     
+    // relations mutations
     if (current.children) {
       const isArray = Array.isArray(current.children);
 
@@ -27,9 +28,12 @@ export const toLinkedTree = (rootNode) => {
         current.child.parent = current;
         queue.push(current.children);
       }
-
-      delete current.children;
     }
+
+    // properties mutation
+    Object.assign(current, current.props);
+    delete current.props;
+    delete current.children;
   }
 
   return rootNode;

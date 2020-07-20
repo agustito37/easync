@@ -19,8 +19,8 @@ const es = new Easync(h`
   <//>
 `);
 
-es.start();
-
 es.onFinish = () => {
   console.log('Finished');
 };
+
+es.start();
