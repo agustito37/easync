@@ -1,34 +1,36 @@
-
 /*
-  child
-  sibling
-  parent
+  queue tree traversal mutation
+  input  node : { children, ...otherProps }
+  output node : { child, sibling, parent, ...otherProps }
 */
-export const toLinkedListTree = (flow) => {
-  const rootNode = flow;
-  traverseTree(rootNode, null);
+export const toLinkedTree = (rootNode) => {
+  const queue = [rootNode];
+
+  while(queue.length) {
+    const current = queue.shift();
+    
+    if (current.children) {
+      const isArray = Array.isArray(current.children);
+
+      if (isArray && current.children.length) {
+        current.child = current.children[0];
+
+        let previousSibling;
+        current.children.forEach((child) => {
+          if (previousSibling) previousSibling.sibling = child;
+          previousSibling = child;
+          child.parent = current;
+          queue.push(child);
+        });
+      } else if (!isArray) {
+        current.child = current.children;
+        current.child.parent = current;
+        queue.push(current.children);
+      }
+
+      delete current.children;
+    }
+  }
+
   return rootNode;
-};
-
-const traverseTree = (node, parent) => {
-  if (node == null) return;
-  node.parent = parent;
-
-  // we need to link siblings
-  if (Array.isArray(node.children)) {
-    node.child = node.children[0] || null;
-
-    let previousSibling = null;
-    node.children.forEach(current => {
-      traverseTree(current, node);
-      if (previousSibling) previousSibling.sibling = current;
-      previousSibling = current;
-    });
-
-    delete node.children;
-  }
-  else if (node.children) {
-    node.child = node.children;
-    traverseTree(node.child);
-  }
 };

@@ -1,8 +1,8 @@
-import { toLinkedListTree } from 'core/traverse';
+import { toLinkedTree } from 'core/traverse';
 
 export default class Easync {
   constructor(flow) {
-    this.flow = toLinkedListTree(flow);
+    this.flow = toLinkedTree(flow);
   }
 
   start() {

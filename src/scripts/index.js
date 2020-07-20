@@ -10,9 +10,9 @@ const Condition = () => {
 };
 
 const es = new Easync(h`
-  <loop while="${Condition}">
+  <loop name="loop1" while="${Condition}">
     <${Task} name="task1" />
-    <loop while="${Condition}">
+    <loop name="loop2" while="${Condition}">
       <${Task} name="task2" />
       <${Task} name="task3" />
     <//>
