@@ -1,4 +1,4 @@
-import Component from 'components/component';
+import Component from '@components/component';
 class FlowWorker {
   constructor(flow) {
     this.flow = flow;

@@ -1,6 +1,6 @@
-import FlowWorker from './FlowWorker';
-import h from 'core/h';
-import Component from 'components/component';
+import FlowWorker from '@core/FlowWorker';
+import htm from '@core/VNode';
+import Component from '@components/Component';
 
 const start = async (flow) => {
   const worker = new FlowWorker(flow());
@@ -8,7 +8,7 @@ const start = async (flow) => {
 }; 
 
 export default {
-  create: h,
+  create: htm,
   start,
   Component,
 };

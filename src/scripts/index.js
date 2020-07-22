@@ -1,7 +1,7 @@
-import Easync from 'core/easync';
-import { sleep } from 'core/utils/helpers';
-import Loop from 'components/loop';
-import Do from 'components/do';
+import Easync from '@core/Easync';
+import { sleep } from '@core/utils/helpers';
+import Loop from '@components/Loop';
+import Do from '@components/Do';
 
 const flow = () => {
   const condition = async () => {

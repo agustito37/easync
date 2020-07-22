@@ -1,5 +1,6 @@
 // not sure about an use case for this yet 
 // maybe if you add an idle="true" attribute to the task or conditional
+// it can be evaluated in this loop
 
 const workQueue = [];
 

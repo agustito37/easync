@@ -4,7 +4,9 @@
   "description": "",
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack --config webpack/webpack.config.prod.js --colors",
-    "start": "webpack-dev-server --config webpack/webpack.config.dev.js"
+    "start": "webpack-dev-server --config webpack/webpack.config.dev.js",
+    "test": "jest --verbose",
+    "test:watch": "jest --verbose --watch"
   },
   "repository": {
     "type": "git",
@@ -23,6 +25,14 @@
   "bugs": {
     "url": "https://github.com/agustito37/easync/issues"
   },
+  "jest": {
+    "testMatch": ["**/__tests__/**/*.test.js"],
+    "moduleNameMapper": {
+      "^@core(.*)": "<rootDir>/src/core/$1",
+      "^@platform(.*)": "<rootDir>/src/platform/$1",
+      "^@components(.*)": "<rootDir>/src/components/$1"
+    }
+  },
   "devDependencies": {
     "@babel/core": "^7.10.2",
     "@babel/plugin-proposal-class-properties": "^7.10.1",
@@ -37,6 +47,7 @@
     "eslint-loader": "^4.0.2",
     "file-loader": "^6.0.0",
     "html-webpack-plugin": "^4.3.0",
+    "jest": "^26.1.0",
     "mini-css-extract-plugin": "^0.9.0",
     "node-sass": "^4.14.1",
     "sass-loader": "^8.0.2",

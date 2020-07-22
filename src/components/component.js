@@ -20,6 +20,10 @@ export default class Component {
   next() {
     this.currentWork.workStack.push(this.currentWork.sibling);
   }
+
+  execute () { 
+    throw new Error("Execute not implemented");
+  }
 };
 
 Component.prototype.__isEasyncClass__ = true;
