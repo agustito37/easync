@@ -1,13 +1,13 @@
-export default class Easync {
-  constructor(flow) {
-    this.flow = flow;
-  }
+import FlowWorker from './FlowWorker';
+import h from 'core/h';
 
-  // returns a promise?
-  start() {
-    console.log(this.flow);
-    
-    // create an observer maybe
-    if (this.onFinish) this.onFinish();
-  }
+const start = async (flow) => {
+  const flowVTree = flow();
+  const worker = new FlowWorker(flowVTree);
+  return worker.start();
+}; 
+
+export default {
+  start,
+  create: h,
 };

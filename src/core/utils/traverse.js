@@ -3,7 +3,7 @@
   input  node : { children, props }
   output node : { child, sibling, parent, ...props }
 */
-export const jsxToLinkedTree = (rootNode) => {
+export const jsxVNodeToLinkedTree = (rootNode) => {
   const queue = [rootNode];
 
   while(queue.length) {

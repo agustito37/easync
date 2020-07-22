@@ -1,8 +1,9 @@
 import htm from 'htm';
 
-// output node : { child, sibling, parent, ...props }
+// create test for this: given an input x expects the output y
+// output node: { child, sibling, parent, props }
 const h = (type, props, ...children) => {
-  const node = { type, ...props };
+  const node = { type, props };
 
   if (children.length) {
     node.child = children[0];
