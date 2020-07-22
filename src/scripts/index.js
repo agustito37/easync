@@ -1,25 +1,32 @@
 import Easync from 'core/easync';
 import { sleep } from 'core/utils/helpers';
+import Loop from 'components/loop';
+import Do from 'components/do';
 
 const flow = () => {
-  const condition = async (context) => {
-    await sleep(3000);
-    console.log(`conditional excecuted: ${true}`);
+  const condition = async () => {
+    await sleep(1000);
+    console.log(`Conditional executed: ${true}`);
     return true;
   };
 
-  const task = (props, context) => {
-    console.log(`${props.name} excecuted`);
+  const conditionFalse = async () => {
+    await sleep(1000);
+    console.log(`Conditional executed: ${false}`);
+    return false;
+  };
+
+  const task = (props) => {
+    console.log(`Task executed: ${props.name}`);
     return 1;
   };
 
   return Easync.create`
-    <loop while="${condition}">
-      <${task} name="task1" />
-      <do while="${condition}">
-        <${task} name="task2" />
-        <${task} name="task3" />
+    <${Loop} times=3 while=${condition}>
+      <${Do} while=${conditionFalse}>
+        <${task} name="task1" />
       <//>
+      <${task} name="task2" />
     <//>
   `;
 };

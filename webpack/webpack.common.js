@@ -29,6 +29,7 @@ module.exports = {
       '~': Path.resolve(__dirname, '../src'),
       'core': Path.resolve(__dirname, '../src/core'),
       'platform': Path.resolve(__dirname, '../src/platform'),
+      'components': Path.resolve(__dirname, '../src/components'),
     },
   },
   module: {

@@ -1,67 +1,49 @@
+import Component from 'components/component';
 class FlowWorker {
   constructor(flow) {
     this.flow = flow;
+
+    // TODO: implement context for tasks and evaluations (?)
     this.context = {};
   }
 
-  async perform(work) {
-    const workFn = work.type;
-    return workFn(work.props, this.context);
+  async start() {
+    return this.traverse();
   }
 
-  async evaluate(condition) {
-    return condition(this.context);
+  async execute(component) {
+    return component.execute();
+  }
+
+  async perform(work) {
+    return work.type(work.props);
   }
 
   async traverse() {
     const workStack = [this.flow];
     while(workStack.length) {
-      const current = workStack.pop();
-      const child = current.child;
-      const sibling = current.sibling;
+      const currentWork = workStack.pop();
+      if (!currentWork) continue;
+      currentWork.workStack = workStack;
 
-      // task
-      if (typeof(current.type) === 'function') {
-        const result = await this.perform(current);
-        if (sibling) workStack.push(sibling);
+      // class component
+      if (currentWork.type.prototype.__isEasyncClass__) {
+        let component;
+        if (currentWork.__component__) {
+          component = currentWork.__component__;
+        } else {
+          component = new currentWork.type(currentWork);
+          currentWork.__component__ = component;
+        }
+        await this.execute(component);
       } 
 
-      // loop while
-      else if (current.type === 'loop') {
-        if (child){
-          // maybe we can make conditionals reactive so we only evaluate if its dependencies change
-          const evaluationResult = await this.evaluate(current.props.while);
-          if (evaluationResult) {
-            workStack.push(current);
-            workStack.push(child);
-          }
-        }
-      }
-
-      // do while
-      else if (current.type === 'do') {
-        if (child){
-          // we can store a counter inside a context for this particular type of node
-          // so the conditional is not executed the first time it processes this node
-          // this mutation is safe when resuing the same flow in different workers
-          // given you are creating a new Virtual Tree every time you call Easync.start
-          let shouldContinue = true;
-          if (!current.context) current.context = { counter: 0 };
-          if (current.context.counter) {
-            const shouldContinue = await this.evaluate(current.props.while);
-          }
-          if (shouldContinue) {
-            workStack.push(current);
-            workStack.push(child);
-            current.context.counter++;
-          }
-        }
-      }
+      // task
+      else if (typeof(currentWork.type) === 'function') {
+        await this.perform(currentWork);
+        workStack.push(currentWork.sibling);
+      } 
     }
-  }
-
-  async start() {
-    return this.traverse();
   }
 }
 
