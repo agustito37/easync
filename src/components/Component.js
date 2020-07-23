@@ -1,3 +1,5 @@
+import VNodeIterator from '@components/VNodeIterator';
+
 export default class Component {
   constructor(currentWork) {
     this.currentWork = currentWork;
@@ -9,16 +11,24 @@ export default class Component {
     return condition();
   }
 
+  onPush(work) {
+    this.currentWork.workStack.push(work); 
+  }
+
+  onSkipSiblings(work) {
+    work.__skipSiblings = true; 
+  }
+
   current() {
-    this.currentWork.workStack.push(this.currentWork);
+    return new VNodeIterator(this.currentWork, this.onPush.bind(this), this.onSkipSiblings);
   }
 
   child() {
-    this.currentWork.workStack.push(this.currentWork.child);
+    return new VNodeIterator(this.currentWork.child, this.onPush.bind(this), this.onSkipSiblings);
   }
 
   next() {
-    this.currentWork.workStack.push(this.currentWork.sibling);
+    return new VNodeIterator(this.currentWork.sibling, this.onPush.bind(this), this.onSkipSiblings);
   }
 
   execute () { 

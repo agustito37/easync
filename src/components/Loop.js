@@ -5,10 +5,10 @@ export default class Loop extends Component {
     const shouldLoop = await this.evaluate(this.props.while);
 
     if (shouldLoop) {
-      this.current();
-      this.child();
+      this.current().push();
+      this.child().push();
       return;
     } 
-    this.next();
+    this.next().push();
   }
 };

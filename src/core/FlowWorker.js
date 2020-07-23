@@ -71,7 +71,6 @@ class FlowWorker {
 
       // class component
       if (this.isClass(currentWork)) {
-        console.log('isClass');
         await this.executeMemoized(currentWork);
       } 
 
@@ -86,7 +85,11 @@ class FlowWorker {
 
         // task
         else {
-          workStack.push(currentWork.sibling);
+          if (currentWork.__skipSiblings) {
+            currentWork.__skipSiblings = false;
+          } else {
+            workStack.push(currentWork.sibling);
+          }
         }
       } 
     }

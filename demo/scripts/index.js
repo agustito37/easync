@@ -2,18 +2,34 @@ import Easync from '@core/Easync';
 import { sleep } from '@utils/helpers';
 import Loop from '@components/Loop';
 import Do from '@components/Do';
+import Switch from '@components/Switch';
+
+let flag = true;
 
 const Flow = () => {
   const condition = async () => {
-    await sleep(1000);
+    await sleep(2000);
     console.log(`Conditional executed: ${true}`);
     return true;
   };
 
   const conditionFalse = async () => {
-    await sleep(1000);
+    await sleep(2000);
     console.log(`Conditional executed: ${false}`);
     return false;
+  };
+
+  const conditionSwitch = async () => {
+    await sleep(2000);
+    console.log(`Conditional executed: ${flag?2:3}`);
+    if (flag) {
+      flag = !flag;
+      return "2";
+    } else {
+      flag = !flag;
+      return "3";
+    }
+    
   };
 
   const Task = (props) => {
@@ -23,7 +39,11 @@ const Flow = () => {
 
   const SubFlow = () => Easync.create`
     <${Do} while=${condition}>
-      <${Task} name="task1" />
+      <${Switch} condition=${conditionSwitch}>
+        <${Task} case="1" name="task1" />
+        <${Task} case="2" name="task2" />
+        <${Task} case="3" name="task3" />
+      <//>
     <//>
   `;
 

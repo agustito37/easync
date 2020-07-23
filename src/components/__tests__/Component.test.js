@@ -25,7 +25,7 @@ describe("Component", () => {
 
     const component = new Component(currentWork);
 
-    component.child();
+    component.child().push();
     expect(currentWork.workStack).toHaveLength(1);
   });
 
@@ -36,7 +36,7 @@ describe("Component", () => {
 
     const component = new Component(currentWork);
 
-    component.next();
+    component.next().push();
     expect(currentWork.workStack).toHaveLength(1);
   });
 
@@ -46,7 +46,7 @@ describe("Component", () => {
 
     const component = new Component(currentWork);
 
-    component.current();
+    component.current().push();
     expect(currentWork.workStack).toHaveLength(1);
   });
 });

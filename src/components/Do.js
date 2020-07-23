@@ -16,13 +16,13 @@ export default class Do extends Component {
     this.state.counter++;
 
     if (shouldLoop) {
-      this.current();
-      this.child();
+      this.current().push();
+      this.child().push();
       return;
     } 
 
     // reset counter for next time is called
     this.state.counter = 0;
-    this.next();
+    this.next().push();
   }
 };
