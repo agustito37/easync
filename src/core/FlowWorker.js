@@ -1,10 +1,24 @@
 import Component from '@components/Component';
+
 class FlowWorker {
   constructor(flow) {
     this.flow = flow;
 
     // TODO: implement context for tasks and evaluations (?)
+    // also, we have a pending implementation of inputs and outputs of tasks
     this.context = {};
+  }
+
+  isSubFlow(returnedValue) {
+    return returnedValue && returnedValue.__isVNode;
+  }
+
+  isClass(work) {
+    return work.type.prototype && work.type.prototype.__isEasyncClass__;
+  }
+
+  isFunction(work) {
+    return typeof(work.type) === 'function';
   }
 
   async start() {
@@ -15,8 +29,36 @@ class FlowWorker {
     return component.execute();
   }
 
+  async executeMemoized(work) {
+    let component;
+
+    if (work.__instance) {
+      component = work.__instance;
+    } else {
+      component = new work.type(work);
+      work.__instance = component;
+    }
+
+    return this.execute(component);
+  }
+
   async perform(work) {
     return work.type(work.props);
+  }
+
+  async performMemoized(work) {
+    let result;
+
+    if (work.__cache) {
+      result = work.__cache;
+    } else {
+      result = await this.perform(work);
+
+      // cache just for sublfows, not tasks
+      if (this.isSubFlow(result)) work.__cache = result;
+    }
+
+    return result;
   }
 
   async traverse() {
@@ -24,26 +66,21 @@ class FlowWorker {
     while(workStack.length) {
       const currentWork = workStack.pop();
       if (!currentWork) continue;
+
       currentWork.workStack = workStack;
 
       // class component
-      if (currentWork.type.prototype.__isEasyncClass__) {
-        let component;
-        if (currentWork.__component__) {
-          component = currentWork.__component__;
-        } else {
-          component = new currentWork.type(currentWork);
-          currentWork.__component__ = component;
-        }
-        await this.execute(component);
+      if (this.isClass(currentWork)) {
+        console.log('isClass');
+        await this.executeMemoized(currentWork);
       } 
 
       // functional component
-      else if (typeof(currentWork.type) === 'function') {
-        const result = await this.perform(currentWork);
+      else if(this.isFunction(currentWork)) {
+        const result = await this.performMemoized(currentWork);
 
         // subflow
-        if (result && result.__isVNode__) {
+        if (this.isSubFlow(result)) {
           workStack.push(result);
         } 
 

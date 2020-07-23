@@ -20,6 +20,9 @@ export default class Do extends Component {
       this.child();
       return;
     } 
+
+    // reset counter for next time is called
+    this.state.counter = 0;
     this.next();
   }
 };

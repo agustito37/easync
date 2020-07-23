@@ -1,6 +1,5 @@
 import htm from 'htm';
 
-// create test for this: given an input x expects the output y
 // output node: { child, sibling, parent, props }
 const h = (type, props, ...children) => {
   const node = { type, props };
@@ -16,7 +15,7 @@ const h = (type, props, ...children) => {
     });
   }
 
-  node.__isVNode__ = true;
+  node.__isVNode = true;
   return node;
 };
 

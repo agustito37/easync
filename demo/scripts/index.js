@@ -1,5 +1,5 @@
 import Easync from '@core/Easync';
-import { sleep } from '@core/utils/helpers';
+import { sleep } from '@utils/helpers';
 import Loop from '@components/Loop';
 import Do from '@components/Do';
 
@@ -16,14 +16,14 @@ const Flow = () => {
     return false;
   };
 
-  const ATask = (props) => {
+  const Task = (props) => {
     console.log(`Task executed: ${props.name}`);
     return 1;
   };
 
   const SubFlow = () => Easync.create`
     <${Do} while=${condition}>
-      <${ATask} name="task1" />
+      <${Task} name="task1" />
     <//>
   `;
 
