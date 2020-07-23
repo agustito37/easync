@@ -9,13 +9,13 @@ describe("Component", () => {
     expect(component.execute).toThrow(Error);
   });
 
-  it("evaluates a condition", () => {
+  it("evaluates a condition", async () => {
     const testCondition = jest.fn();
     const currentWork = htm`<${Component} />`;
 
     const component = new Component(currentWork);
 
-    component.evaluate(testCondition);
+    await component.evaluate(testCondition);
     expect(testCondition).toBeCalledTimes(1);
   });
 

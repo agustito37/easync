@@ -3,32 +3,43 @@ import htm from '@core/VNode';
 import Component from '@components/Component';
 
 describe("FlowWorker", () => {
-  it("starts a flow", () => {
+  it("starts a flow", async () => {
     const testTask = jest.fn();
     const node = htm`<${testTask} />`;
 
     const worker = new FlowWorker(node);
 
-    worker.start();
+    await worker.start();
     expect(testTask).toBeCalledTimes(1);
   });
 
   it("executes a component", () => {
     const node = htm`<${Component} />`;
 
-    const component = new node.type(node);
     const worker = new FlowWorker(node);
 
-    expect(() => worker.execute(component)).rejects.toThrow(Error);
+    expect(() => worker.executeMemoized(node)).rejects.toThrow(Error);
   });
 
-  it("performs a task", () => {
+  it("performs a task", async () => {
     const testTask = jest.fn();
     const node = htm`<${testTask} />`;
 
     const worker = new FlowWorker(node);
 
-    worker.perform(node);
+    await worker.performMemoized(node);
+    expect(testTask).toBeCalledTimes(1);
+  });
+
+  it("performs a subflow", async () => {
+    const testTask = jest.fn();
+    const testSubFlow = () => htm`<${testTask} />`;
+    const node = htm`<${testSubFlow} />`;
+
+    const worker = new FlowWorker(node);
+
+    const innerWork = await worker.performMemoized(node);
+    await worker.performMemoized(innerWork);
     expect(testTask).toBeCalledTimes(1);
   });
 });
