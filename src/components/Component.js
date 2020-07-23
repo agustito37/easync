@@ -1,4 +1,5 @@
 import VNodeIterator from '@components/VNodeIterator';
+import NotImplementedError from '@utils/NotImplementedError';
 
 export default class Component {
   constructor(currentWork) {
@@ -32,7 +33,7 @@ export default class Component {
   }
 
   execute () { 
-    throw new Error("Execute not implemented");
+    throw new NotImplementedError("Execute not implemented");
   }
 };
 

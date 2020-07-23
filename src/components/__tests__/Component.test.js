@@ -1,12 +1,13 @@
 import htm from '@core/VNode';
 import Component from '@components/Component';
+import NotImplementedError from '@utils/NotImplementedError';
 
 describe("Component", () => {
   it("executes", () => {
     const currentWork = htm`<${Component} />`;
     const component = new Component(currentWork);
 
-    expect(component.execute).toThrow(Error);
+    expect(component.execute).toThrow(NotImplementedError);
   });
 
   it("evaluates a condition", async () => {
@@ -29,14 +30,19 @@ describe("Component", () => {
     expect(currentWork.workStack).toHaveLength(1);
   });
 
-  it("adds its sibling to the work stack", () => {
-    const currentWork = htm`<${Component} />`;
+  it("adds a sibling to the work stack", () => {
+    const currentWork = htm`
+      <${Component}>
+        <h1 />
+        <h1 />
+      <//>
+    `;
     currentWork.sibling = {};
     currentWork.workStack = [];
 
     const component = new Component(currentWork);
 
-    component.next().push();
+    component.child().next().push();
     expect(currentWork.workStack).toHaveLength(1);
   });
 

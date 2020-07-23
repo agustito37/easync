@@ -1,6 +1,7 @@
 import FlowWorker from '@core/FlowWorker';
 import htm from '@core/VNode';
 import Component from '@components/Component';
+import NotImplementedError from '@utils/NotImplementedError';
 
 describe("FlowWorker", () => {
   it("starts a flow", async () => {
@@ -18,7 +19,7 @@ describe("FlowWorker", () => {
 
     const worker = new FlowWorker(node);
 
-    expect(() => worker.executeMemoized(node)).rejects.toThrow(Error);
+    expect(() => worker.executeMemoized(node)).rejects.toThrow(NotImplementedError);
   });
 
   it("performs a task", async () => {

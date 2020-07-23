@@ -30,7 +30,8 @@
     "moduleNameMapper": {
       "^@core(.*)": "<rootDir>/src/core/$1",
       "^@platform(.*)": "<rootDir>/src/platform/$1",
-      "^@components(.*)": "<rootDir>/src/components/$1"
+      "^@components(.*)": "<rootDir>/src/components/$1",
+      "^@utils(.*)": "<rootDir>/src/utils/$1"
     }
   },
   "devDependencies": {

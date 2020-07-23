@@ -6,11 +6,13 @@ export default class VNodeIterator {
   }
 
   push() {
-    this.node.type && this.onPush(this.node);
+    this.onPush(this.node);
+    return this;
   }
 
   skipSiblings() {
     this.node.sibling && this.onSkipSiblings(this.node);
+    return this;
   }
 
   current() {
