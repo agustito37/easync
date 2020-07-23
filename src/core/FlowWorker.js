@@ -1,4 +1,4 @@
-import Component from '@components/component';
+import Component from '@components/Component';
 class FlowWorker {
   constructor(flow) {
     this.flow = flow;
@@ -38,10 +38,19 @@ class FlowWorker {
         await this.execute(component);
       } 
 
-      // task
+      // functional component
       else if (typeof(currentWork.type) === 'function') {
-        await this.perform(currentWork);
-        workStack.push(currentWork.sibling);
+        const result = await this.perform(currentWork);
+
+        // subflow
+        if (result && result.__isVNode__) {
+          workStack.push(result);
+        } 
+
+        // task
+        else {
+          workStack.push(currentWork.sibling);
+        }
       } 
     }
   }

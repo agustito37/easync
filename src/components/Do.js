@@ -1,4 +1,4 @@
-import Component from './component';
+import Component from './Component';
 
 export default class Do extends Component {
   constructor(currentWork) {

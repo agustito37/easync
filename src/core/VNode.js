@@ -16,6 +16,7 @@ const h = (type, props, ...children) => {
     });
   }
 
+  node.__isVNode__ = true;
   return node;
 };
 

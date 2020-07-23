@@ -3,7 +3,7 @@ import { sleep } from '@core/utils/helpers';
 import Loop from '@components/Loop';
 import Do from '@components/Do';
 
-const flow = () => {
+const Flow = () => {
   const condition = async () => {
     await sleep(1000);
     console.log(`Conditional executed: ${true}`);
@@ -16,19 +16,20 @@ const flow = () => {
     return false;
   };
 
-  const task = (props) => {
+  const ATask = (props) => {
     console.log(`Task executed: ${props.name}`);
     return 1;
   };
 
-  return Easync.create`
-    <${Loop} times=3 while=${condition}>
-      <${Do} while=${conditionFalse}>
-        <${task} name="task1" />
-      <//>
-      <${task} name="task2" />
+  const SubFlow = () => Easync.create`
+    <${Do} while=${condition}>
+      <${ATask} name="task1" />
     <//>
+  `;
+
+  return Easync.create`
+    <${SubFlow} />
   `;
 };
 
-Easync.start(flow);
+Easync.start(Flow);
