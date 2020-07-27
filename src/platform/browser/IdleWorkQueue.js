@@ -1,12 +1,12 @@
 // not sure about an use case for this yet 
-// maybe if you add an idle="true" attribute to the task or conditional
-// it can be evaluated in this loop
+// maybe when you add an idle="true" attribute to the task or conditional
+// it must be performed on the idle queue
 
-const workQueue = [];
+const idleWorkQueue = [];
 
 const workLoop = (deadline) => {
-  while(deadline.timeRemaining() > 0 && workQueue.length) {
-    const current = workQueue.shift();
+  while(deadline.timeRemaining() > 0 && idleWorkQueue.length) {
+    const current = idleWorkQueue.shift();
     current();
   }
 
@@ -15,4 +15,6 @@ const workLoop = (deadline) => {
 
 window.requestIdleCallback(workLoop);
 
-export default workQueue;
+export default {
+  push: (work) => idleWorkQueue.push(work)
+};

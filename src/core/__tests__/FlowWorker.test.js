@@ -43,4 +43,49 @@ describe("FlowWorker", () => {
     await worker.performMemoized(innerWork);
     expect(testTask).toBeCalledTimes(1);
   });
+
+  it("work over a fragment", async () => {
+    const testTask = jest.fn();
+    const node = htm`
+      <>
+        <${testTask} />
+      <//>
+    `;
+
+    const worker = new FlowWorker(node);
+
+    await worker.start();
+    expect(testTask).toBeCalledTimes(1);
+  });
+
+  it("skip siblings if set", async () => {
+    const testTask = jest.fn();
+    const node = htm`
+      <>
+        <${testTask} />
+        <${testTask} />
+      <//>
+    `;
+    node.child.__skipSiblings = true;
+
+    const worker = new FlowWorker(node);
+
+    await worker.start();
+    expect(testTask).toBeCalledTimes(1);
+  });
+
+  it("does not skip siblings by default", async () => {
+    const testTask = jest.fn();
+    const node = htm`
+      <>
+        <${testTask} />
+        <${testTask} />
+      <//>
+    `;
+
+    const worker = new FlowWorker(node);
+
+    await worker.start();
+    expect(testTask).toBeCalledTimes(2);
+  });
 });

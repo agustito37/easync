@@ -55,4 +55,13 @@ describe("Component", () => {
     component.current().push();
     expect(currentWork.workStack).toHaveLength(1);
   });
+
+  it("it sets skipSiblings", () => {
+    const currentWork = htm`<${Component} />`;
+
+    const component = new Component(currentWork);
+
+    component.onSkipSiblings(currentWork);
+    expect(currentWork.__skipSiblings).toBe(true);
+  });
 });

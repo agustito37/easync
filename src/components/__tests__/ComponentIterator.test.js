@@ -5,7 +5,7 @@ describe("ComponentIterator", () => {
   it("push call", async () => {
     const testPush = jest.fn();
     const currentWork = htm`
-      <div>
+      <>
         <h1 />
         <h2 />
       <//>
@@ -20,7 +20,7 @@ describe("ComponentIterator", () => {
   it("skipSiblings being called", async () => {
     const testSkip = jest.fn();
     const currentWork = htm`
-      <div>
+      <>
         <h1 />
         <h2 />
       <//>
@@ -35,7 +35,7 @@ describe("ComponentIterator", () => {
   it("skipSiblings not being called", async () => {
     const testSkip = jest.fn();
     const currentWork = htm`
-      <div>
+      <>
         <h1 />
         <h2 />
       <//>
@@ -63,7 +63,7 @@ describe("ComponentIterator", () => {
 
   it("child", async () => {
     const currentWork = htm`
-      <div>
+      <>
         <h1 />
         <h2 />
       <//>
@@ -77,7 +77,7 @@ describe("ComponentIterator", () => {
 
   it("sibling", async () => {
     const currentWork = htm`
-      <div>
+      <>
         <h1 />
         <h2 />
       <//>

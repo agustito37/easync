@@ -37,18 +37,11 @@ const Flow = () => {
     return 1;
   };
 
-  const SubFlow = () => Easync.create`
-    <${Do} while=${condition}>
-      <${Switch} condition=${conditionSwitch}>
-        <${Task} case="1" name="task1" />
-        <${Task} case="2" name="task2" />
-        <${Task} case="3" name="task3" />
-      <//>
-    <//>
-  `;
-
   return Easync.create`
-    <${SubFlow} />
+    <>
+      <${Task} name="task1" />
+      <${Task} name="task2" />
+    <//>
   `;
 };
 

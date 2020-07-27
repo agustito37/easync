@@ -21,6 +21,10 @@ class FlowWorker {
     return typeof(work.type) === 'function';
   }
 
+  isFragment(work) {
+    return typeof(work.type) === 'string';
+  }
+
   async start() {
     return this.traverse();
   }
@@ -92,6 +96,12 @@ class FlowWorker {
           }
         }
       } 
+
+      // fragment (tag)
+      else if (this.isFragment(currentWork)) {
+        workStack.push(currentWork.sibling);
+        workStack.push(currentWork.child);
+      }
     }
   }
 }
