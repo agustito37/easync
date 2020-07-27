@@ -1,4 +1,4 @@
-export default class VNodeIterator {
+export default class ComponentIterator {
   constructor(node = {}, onPush, onSkipSiblings) {
     this.node = node;
     this.onPush = onPush;
@@ -20,10 +20,10 @@ export default class VNodeIterator {
   }
 
   child() {
-    return new VNodeIterator(this.node.child, this.onPush, this.onSkipSiblings);
+    return new ComponentIterator(this.node.child, this.onPush, this.onSkipSiblings);
   }
 
   next() {
-    return new VNodeIterator(this.node.sibling, this.onPush, this.onSkipSiblings);
+    return new ComponentIterator(this.node.sibling, this.onPush, this.onSkipSiblings);
   }
 }

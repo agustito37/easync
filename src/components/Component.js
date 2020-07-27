@@ -1,4 +1,4 @@
-import VNodeIterator from '@components/VNodeIterator';
+import ComponentIterator from '@components/ComponentIterator';
 import NotImplementedError from '@utils/NotImplementedError';
 
 export default class Component {
@@ -21,15 +21,15 @@ export default class Component {
   }
 
   current() {
-    return new VNodeIterator(this.currentWork, this.onPush.bind(this), this.onSkipSiblings);
+    return new ComponentIterator(this.currentWork, this.onPush.bind(this), this.onSkipSiblings);
   }
 
   child() {
-    return new VNodeIterator(this.currentWork.child, this.onPush.bind(this), this.onSkipSiblings);
+    return new ComponentIterator(this.currentWork.child, this.onPush.bind(this), this.onSkipSiblings);
   }
 
   next() {
-    return new VNodeIterator(this.currentWork.sibling, this.onPush.bind(this), this.onSkipSiblings);
+    return new ComponentIterator(this.currentWork.sibling, this.onPush.bind(this), this.onSkipSiblings);
   }
 
   execute () { 

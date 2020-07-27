@@ -3,7 +3,7 @@ import Loop from '@components/Loop';
 
 describe("Loop", () => {
   it("loops", async () => {
-    const testConditional = jest.fn(() => true);
+    const testConditional = () => true;
   
     const currentWork = htm`
       <${Loop} while=${testConditional}>
@@ -18,7 +18,7 @@ describe("Loop", () => {
   });
 
   it("does not loop", async () => {
-    const testConditional = jest.fn(() => false);
+    const testConditional = () => false;
   
     const currentWork = htm`
       <${Loop} while=${testConditional}>

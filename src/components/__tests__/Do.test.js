@@ -3,7 +3,7 @@ import Do from '@components/Do';
 
 describe("Do", () => {
   it("loops once", async () => {
-    const testConditional = jest.fn(() => true);
+    const testConditional = () => true;
   
     const currentWork = htm`
       <${Do} while=${testConditional}>
@@ -18,7 +18,7 @@ describe("Do", () => {
   });
 
   it("does not loop twice when condition fails", async () => {
-    const testConditional = jest.fn(() => false);
+    const testConditional = () => false;
   
     const currentWork = htm`
       <${Do} while=${testConditional}>
@@ -35,7 +35,7 @@ describe("Do", () => {
   });
 
   it("does loop twice when condition succeed", async () => {
-    const testConditional = jest.fn(() => true);
+    const testConditional = () => true;
   
     const currentWork = htm`
       <${Do} while=${testConditional}>
