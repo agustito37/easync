@@ -3,10 +3,10 @@ import Component from '@components/Component';
 class FlowWorker {
   constructor(flow) {
     this.flow = flow;
+  }
 
-    // TODO: implement context for tasks and evaluations (?)
-    // also, we have a pending implementation of inputs and outputs of tasks
-    this.context = {};
+  isParallel(work) {
+    return !!work.props.parallel;
   }
 
   isSubFlow(returnedValue) {
@@ -29,34 +29,52 @@ class FlowWorker {
     return this.traverse();
   }
 
+  async executeInParallel(work) {
+    const child = work.child;
+    if(child) {
+      const parallelProp = work.props.parallel;
+      const parallelWork = [];
+
+      while(child) {
+        parallelWork.push(child);
+        child = child.sibling;
+      }
+      const outputs = await Promise.all(parallelWork.map((childWork) => this.executeWork(childWork)));
+
+      if (this.isFunction(parallelProp)) {
+        this.context.input = parallelProp(outputs);
+      }
+    }
+  }
+
   async execute(component) {
     return component.execute();
   }
 
-  async executeMemoized(work) {
+  async executeMemoized(work, context) {
     let component;
 
     if (work.__instance) {
       component = work.__instance;
     } else {
-      component = new work.type(work);
+      component = new work.type(work, context);
       work.__instance = component;
     }
 
     return this.execute(component);
   }
 
-  async perform(work) {
-    return work.type(work.props);
+  async perform(work, context) {
+    return work.type(work.props, context);
   }
 
-  async performMemoized(work) {
+  async performMemoized(work, context) {
     let result;
 
     if (work.__cache) {
       result = work.__cache;
     } else {
-      result = await this.perform(work);
+      result = await this.perform(work, context);
 
       // cache just for sublfows, not tasks
       if (this.isSubFlow(result)) work.__cache = result;
@@ -67,33 +85,41 @@ class FlowWorker {
 
   async traverse() {
     const workStack = [this.flow];
+    const context = { };
+
     while(workStack.length) {
       const currentWork = workStack.pop();
-      if (!currentWork) continue;
+      if (!currentWork) return;
 
       currentWork.workStack = workStack;
 
       // class component
       if (this.isClass(currentWork)) {
-        await this.executeMemoized(currentWork);
+        await this.executeMemoized(currentWork, context);
+        return;
       } 
 
       // functional component
       else if(this.isFunction(currentWork)) {
-        const result = await this.performMemoized(currentWork);
+        const output = await this.performMemoized(currentWork, context);
 
         // subflow
-        if (this.isSubFlow(result)) {
-          workStack.push(result);
-        } 
+        if (this.isSubFlow(output)) {
+          workStack.push(output);
+          return;
+        }
 
         // task
         else {
+          this.context.input = output;
+          
           if (currentWork.__skipSiblings) {
             currentWork.__skipSiblings = false;
           } else {
             workStack.push(currentWork.sibling);
           }
+
+          return output;
         }
       } 
 
@@ -101,6 +127,7 @@ class FlowWorker {
       else if (this.isFragment(currentWork)) {
         workStack.push(currentWork.sibling);
         workStack.push(currentWork.child);
+        return;
       }
     }
   }

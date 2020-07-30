@@ -2,14 +2,15 @@ import ComponentIterator from '@components/ComponentIterator';
 import NotImplementedError from '@utils/NotImplementedError';
 
 export default class Component {
-  constructor(currentWork) {
+  constructor(currentWork, context) {
     this.currentWork = currentWork;
     this.props = currentWork.props;
+    this.context = context;
   }
 
-  // maybe we can make conditionals reactive so we only evaluate if its dependencies change
+  // QUESTION: maybe we can make conditionals reactive so we only evaluate if its dependencies change
   async evaluate(condition) {
-    return condition();
+    return condition(this.context);
   }
 
   onPush(work) {
