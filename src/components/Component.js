@@ -18,19 +18,40 @@ export default class Component {
   }
 
   onSkipSiblings(work) {
+    // TODO: skip siblings on components?
     work.__skipSiblings = true; 
   }
 
+  onParallelSiblings(work) {
+    work.__inParallel = true;
+  }
+
   current() {
-    return new ComponentIterator(this.currentWork, this.onPush.bind(this), this.onSkipSiblings);
+    return new ComponentIterator(
+      this.currentWork, 
+      this.onPush.bind(this), 
+      this.onSkipSiblings, 
+      this.onParallelSiblings
+    );
   }
 
   child() {
-    return new ComponentIterator(this.currentWork.child, this.onPush.bind(this), this.onSkipSiblings);
+    return new ComponentIterator(
+      this.currentWork.child, 
+      this.onPush.bind(this), 
+      this.onSkipSiblings, 
+      this.onParallelSiblings
+    );
   }
 
   next() {
-    return new ComponentIterator(this.currentWork.sibling, this.onPush.bind(this), this.onSkipSiblings);
+    return new ComponentIterator(
+      this.currentWork.sibling, 
+      this.onPush.bind(this), 
+      this.onSkipSiblings, 
+      this.onParallelSiblings, 
+      this.node.__skipSiblings
+    );
   }
 
   execute () { 

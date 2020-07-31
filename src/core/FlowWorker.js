@@ -6,15 +6,15 @@ class FlowWorker {
   }
 
   isParallel(work) {
-    return !!work.props.parallel;
+    return !!(work && work.__inParallel);
   }
 
   isSubFlow(returnedValue) {
-    return returnedValue && returnedValue.__isVNode;
+    return !!(returnedValue && returnedValue.__isVNode);
   }
 
   isClass(work) {
-    return work.type.prototype && work.type.prototype.__isEasyncClass__;
+    return !!(work.type.prototype && work.type.prototype.__isEasyncClass__);
   }
 
   isFunction(work) {
@@ -27,24 +27,6 @@ class FlowWorker {
 
   async start() {
     return this.traverse();
-  }
-
-  async executeInParallel(work) {
-    const child = work.child;
-    if(child) {
-      const parallelProp = work.props.parallel;
-      const parallelWork = [];
-
-      while(child) {
-        parallelWork.push(child);
-        child = child.sibling;
-      }
-      const outputs = await Promise.all(parallelWork.map((childWork) => this.executeWork(childWork)));
-
-      if (this.isFunction(parallelProp)) {
-        this.context.input = parallelProp(outputs);
-      }
-    }
   }
 
   async execute(component) {
@@ -93,42 +75,59 @@ class FlowWorker {
 
       currentWork.workStack = workStack;
 
-      // class component
-      if (this.isClass(currentWork)) {
-        await this.executeMemoized(currentWork, context);
-        return;
-      } 
+      await this.nextWork(currentWork, workStack, context);
+    }
+  }
 
-      // functional component
-      else if(this.isFunction(currentWork)) {
-        const output = await this.performMemoized(currentWork, context);
+  async nextWork(work, workStack, context) {
+    // parallel work
+    if (this.isParallel(work)) {
+      let parallelWork = [];
+      let sibling = work;
 
-        // subflow
-        if (this.isSubFlow(output)) {
-          workStack.push(output);
-          return;
-        }
-
-        // task
-        else {
-          this.context.input = output;
-          
-          if (currentWork.__skipSiblings) {
-            currentWork.__skipSiblings = false;
-          } else {
-            workStack.push(currentWork.sibling);
-          }
-
-          return output;
-        }
-      } 
-
-      // fragment (tag)
-      else if (this.isFragment(currentWork)) {
-        workStack.push(currentWork.sibling);
-        workStack.push(currentWork.child);
-        return;
+      while(sibling) {
+        sibling.__skipSiblings = true;
+        parallelWork.push(sibling);
+        sibling = work.sibling;
       }
+
+      const outputs = await Promise.all(parallelWork.map((current) => this.nextWork(current, workStack, context)));
+      const mergeFn = work.parent.props.merge;
+      if (mergeFn) context.output = mergeFn(outputs);
+    }
+
+    // class component
+    else if (this.isClass(work)) {
+      await this.executeMemoized(work, context);
+    } 
+
+    // functional component
+    else if(this.isFunction(work)) {
+      const output = await this.performMemoized(work, context);
+
+      // subflow
+      if (this.isSubFlow(output)) {
+        workStack.push(output);
+      }
+
+      // task
+      else {
+        this.context.input = output;
+        
+        if (work.__skipSiblings) {
+          work.__skipSiblings = false;
+        } else {
+          workStack.push(work.sibling);
+        }
+
+        return output;
+      }
+    } 
+
+    // fragment (tag)
+    else if (this.isFragment(work)) {
+      workStack.push(work.sibling);
+      workStack.push(work.child);
     }
   }
 }

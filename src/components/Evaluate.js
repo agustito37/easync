@@ -10,7 +10,6 @@ export default class Evaluate extends Component {
     }
 
     // skip propagation over siblings
-    child.skipSiblings();
-    child.push();
+    child.skipSiblings().push();
   }
 };

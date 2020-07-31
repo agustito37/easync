@@ -10,6 +10,6 @@ export default class Switch extends Component {
     }
 
     // skip propagation over siblings
-    child.push().skipSiblings();
+    child.skipSiblings().push();
   }
 };
