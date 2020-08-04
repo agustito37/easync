@@ -1,7 +1,7 @@
 import htm from 'htm';
 
 // output node: { child, sibling, parent, props }
-const h = (type, props, ...children) => {
+const h = (type, props = { }, ...children) => {
   const node = { type, props };
 
   if (children.length) {

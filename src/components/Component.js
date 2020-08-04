@@ -7,8 +7,7 @@ export default class Component {
     this.props = currentWork.props;
     this.context = context;
   }
-
-  // QUESTION: maybe we can make conditionals reactive so we only evaluate if its dependencies change
+  
   async evaluate(condition) {
     return condition(this.context);
   }
@@ -18,7 +17,6 @@ export default class Component {
   }
 
   onSkipSiblings(work) {
-    // TODO: skip siblings on components?
     work.__skipSiblings = true; 
   }
 
@@ -50,7 +48,7 @@ export default class Component {
       this.onPush.bind(this), 
       this.onSkipSiblings, 
       this.onParallelSiblings, 
-      this.node.__skipSiblings
+      this.currentWork.__skipSiblings
     );
   }
 

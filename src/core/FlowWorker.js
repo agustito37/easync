@@ -1,4 +1,4 @@
-import Component from '@components/Component';
+import Component from "@components/Component";
 
 class FlowWorker {
   constructor(flow) {
@@ -18,11 +18,11 @@ class FlowWorker {
   }
 
   isFunction(work) {
-    return typeof(work.type) === 'function';
+    return typeof work.type === "function";
   }
 
   isFragment(work) {
-    return typeof(work.type) === 'string';
+    return typeof work.type === "string";
   }
 
   async start() {
@@ -30,7 +30,7 @@ class FlowWorker {
   }
 
   async execute(component) {
-    return component.execute();
+    component.execute();
   }
 
   async executeMemoized(work, context) {
@@ -43,7 +43,7 @@ class FlowWorker {
       work.__instance = component;
     }
 
-    return this.execute(component);
+    this.execute(component);
   }
 
   async perform(work, context) {
@@ -65,11 +65,30 @@ class FlowWorker {
     return result;
   }
 
+  async executeParallel(work, workStack, context) {
+    let parallelWork = [];
+    let sibling = work;
+
+    while (sibling) {
+      sibling.__skipSiblings = true;
+      sibling.__inParallel = false;
+      parallelWork.push(sibling);
+      sibling = sibling.sibling;
+    }
+
+    // TODO: race condition on context reference; shared between parallel work
+    const outputs = await Promise.all(
+      parallelWork.map((current) => this.nextWork(current, workStack, context))
+    );
+    const mergeFn = work.parent.props && work.parent.props.merge;
+    if (mergeFn) context.output = mergeFn(outputs);
+  }
+
   async traverse() {
     const workStack = [this.flow];
-    const context = { };
+    const context = {};
 
-    while(workStack.length) {
+    while (workStack.length) {
       const currentWork = workStack.pop();
       if (!currentWork) return;
 
@@ -82,54 +101,56 @@ class FlowWorker {
   async nextWork(work, workStack, context) {
     // parallel work
     if (this.isParallel(work)) {
-      let parallelWork = [];
-      let sibling = work;
-
-      while(sibling) {
-        sibling.__skipSiblings = true;
-        parallelWork.push(sibling);
-        sibling = work.sibling;
-      }
-
-      const outputs = await Promise.all(parallelWork.map((current) => this.nextWork(current, workStack, context)));
-      const mergeFn = work.parent.props.merge;
-      if (mergeFn) context.output = mergeFn(outputs);
+      this.executeParallel(work, workStack, context);
+      return;
     }
 
     // class component
     else if (this.isClass(work)) {
       await this.executeMemoized(work, context);
-    } 
+      return;
+    }
 
     // functional component
-    else if(this.isFunction(work)) {
+    else if (this.isFunction(work)) {
       const output = await this.performMemoized(work, context);
 
       // subflow
       if (this.isSubFlow(output)) {
         workStack.push(output);
+        return;
       }
 
       // task
       else {
-        this.context.input = output;
-        
+        context.input = output;
+
         if (work.__skipSiblings) {
           work.__skipSiblings = false;
         } else {
           workStack.push(work.sibling);
         }
-
         return output;
       }
-    } 
+    }
 
     // fragment (tag)
     else if (this.isFragment(work)) {
       workStack.push(work.sibling);
       workStack.push(work.child);
+      return;
     }
   }
+
+  async pause() {}
+
+  async resume() {}
+
+  async abort() {}
+
+  async save() {}
+
+  async load() {}
 }
 
 export default FlowWorker;

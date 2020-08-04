@@ -8,7 +8,7 @@ export default class ComponentIterator {
   }
 
   push() {
-    !this.isSkipped && this.onPush(this.node);
+    this.node.type && !this.isSkipped && this.onPush(this.node);
     return this;
   }
 
