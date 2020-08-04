@@ -3,6 +3,9 @@ import Component from "@components/Component";
 class FlowWorker {
   constructor(flow) {
     this.flow = flow;
+
+    // TODO: implement logger
+    this.log = false;
   }
 
   isParallel(work) {
@@ -70,6 +73,7 @@ class FlowWorker {
     let sibling = work;
 
     while (sibling) {
+      // TODO: improve these propagated mutations
       sibling.__skipSiblings = true;
       sibling.__inParallel = false;
       parallelWork.push(sibling);
@@ -142,14 +146,11 @@ class FlowWorker {
     }
   }
 
+  // TODO: implement flow controls
   async pause() {}
-
   async resume() {}
-
   async abort() {}
-
   async save() {}
-
   async load() {}
 }
 
