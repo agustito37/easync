@@ -10,11 +10,11 @@ describe("Do", () => {
         <h1 />
       <//>
     `;
-    currentWork.workStack = [];
-    const doComponent = new Do(currentWork);
+    const context = { workStack: [] };
+    const doComponent = new Do(currentWork, context);
 
     await doComponent.execute();
-    expect(currentWork.workStack).toHaveLength(2);
+    expect(context.workStack).toHaveLength(2);
   });
 
   it("does not loop twice when condition fails", async () => {
@@ -25,13 +25,13 @@ describe("Do", () => {
         <h1 />
       <//>
     `;
-    currentWork.workStack = [];
+    const context = { workStack: [] };
     currentWork.sibling = {};
-    const doComponent = new Do(currentWork);
+    const doComponent = new Do(currentWork, context);
 
     await doComponent.execute();
     await doComponent.execute();
-    expect(currentWork.workStack).toHaveLength(3);
+    expect(context.workStack).toHaveLength(3);
   });
 
   it("does loop twice when condition succeed", async () => {
@@ -42,12 +42,12 @@ describe("Do", () => {
         <h1 />
       <//>
     `;
-    currentWork.workStack = [];
+    const context = { workStack: [] };
     currentWork.sibling = {};
-    const doComponent = new Do(currentWork);
+    const doComponent = new Do(currentWork, context);
 
     await doComponent.execute();
     await doComponent.execute();
-    expect(currentWork.workStack).toHaveLength(4);
+    expect(context.workStack).toHaveLength(4);
   });
 });

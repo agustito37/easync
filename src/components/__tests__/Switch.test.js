@@ -12,10 +12,10 @@ describe("Switch", () => {
         <h3 case="3" />
       <//>
     `;
-    currentWork.workStack = [];
-    const switchComponent = new Switch(currentWork);
+    const context = { workStack: [] };
+    const switchComponent = new Switch(currentWork, context);
 
     await switchComponent.execute();
-    expect(currentWork.workStack[0].type).toBe('h2');
+    expect(context.workStack[0].type).toBe('h2');
   });
 });

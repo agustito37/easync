@@ -1,8 +1,8 @@
 import Component from './Component';
 
 export default class Do extends Component {
-  constructor(currentWork) {
-    super(currentWork);
+  constructor(currentWork, context) {
+    super(currentWork, context);
 
     this.state = { counter: 0 };
   }

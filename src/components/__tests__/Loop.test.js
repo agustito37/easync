@@ -10,11 +10,11 @@ describe("Loop", () => {
         <h1 />
       <//>
     `;
-    currentWork.workStack = [];
-    const loop = new Loop(currentWork);
+    const context = { workStack: [] };
+    const loop = new Loop(currentWork, context);
 
     await loop.execute();
-    expect(currentWork.workStack).toHaveLength(2);
+    expect(context.workStack).toHaveLength(2);
   });
 
   it("does not loop", async () => {
@@ -25,11 +25,11 @@ describe("Loop", () => {
         <h1 />
       <//>
     `;
-    currentWork.workStack = [];
+    const context = { workStack: [] };
     currentWork.sibling = {};
-    const loop = new Loop(currentWork);
+    const loop = new Loop(currentWork, context);
 
     await loop.execute();
-    expect(currentWork.workStack).toHaveLength(1);
+    expect(context.workStack).toHaveLength(1);
   });
 });

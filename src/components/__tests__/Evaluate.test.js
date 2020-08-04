@@ -11,11 +11,11 @@ describe("Evaluate", () => {
         <h2 />
       <//>
     `;
-    currentWork.workStack = [];
-    const evaluate = new Evaluate(currentWork);
+    const context = { workStack: [] };
+    const evaluate = new Evaluate(currentWork, context);
 
     await evaluate.execute();
-    expect(currentWork.workStack[0].type).toBe('h1');
+    expect(context.workStack[0].type).toBe('h1');
   });
 
   it("evaluates to false", async () => {
@@ -27,10 +27,10 @@ describe("Evaluate", () => {
         <h2 />
       <//>
     `;
-    currentWork.workStack = [];
-    const evaluate = new Evaluate(currentWork);
+    const context = { workStack: [] };
+    const evaluate = new Evaluate(currentWork, context);
 
     await evaluate.execute();
-    expect(currentWork.workStack[0].type).toBe('h2');
+    expect(context.workStack[0].type).toBe('h2');
   });
 });

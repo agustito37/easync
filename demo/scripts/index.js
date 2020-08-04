@@ -4,6 +4,7 @@ import Loop from "@components/Loop";
 import Do from "@components/Do";
 import Switch from "@components/Switch";
 import Parallel from "@components/Parallel";
+import Evaluate from "@components/Evaluate";
 
 let flag = true;
 
@@ -42,7 +43,7 @@ const Flow = () => {
   };
 
   return Easync.create`
-    <${Parallel} merge=${merge}>
+    <${Do} while=${condition}>
       <${Task} name="task1" />
       <${Task} name="task2" />
     <//>
@@ -50,3 +51,4 @@ const Flow = () => {
 };
 
 Easync.start(Flow);
+window.Easync = Easync;

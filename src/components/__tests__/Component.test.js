@@ -22,12 +22,12 @@ describe("Component", () => {
 
   it("adds its child to the work stack", () => {
     const currentWork = htm`<${Component}><h1 /><//>`;
-    currentWork.workStack = [];
+    const context = { workStack: [] };
 
-    const component = new Component(currentWork);
+    const component = new Component(currentWork, context);
 
     component.child().push();
-    expect(currentWork.workStack).toHaveLength(1);
+    expect(context.workStack).toHaveLength(1);
   });
 
   it("adds a sibling to the work stack", () => {
@@ -38,22 +38,22 @@ describe("Component", () => {
       <//>
     `;
     currentWork.sibling = {};
-    currentWork.workStack = [];
+    const context = { workStack: [] };
 
-    const component = new Component(currentWork);
+    const component = new Component(currentWork, context);
 
     component.child().next().push();
-    expect(currentWork.workStack).toHaveLength(1);
+    expect(context.workStack).toHaveLength(1);
   });
 
   it("adds itself to the work stack", () => {
     const currentWork = htm`<${Component} />`;
-    currentWork.workStack = [];
+    const context = { workStack: [] };
 
-    const component = new Component(currentWork);
+    const component = new Component(currentWork, context);
 
     component.current().push();
-    expect(currentWork.workStack).toHaveLength(1);
+    expect(context.workStack).toHaveLength(1);
   });
 
   it("it sets skipSiblings", () => {

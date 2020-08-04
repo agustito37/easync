@@ -13,7 +13,7 @@ export default class Component {
   }
 
   onPush(work) {
-    this.currentWork.workStack.push(work); 
+    this.context.workStack.push(work); 
   }
 
   onSkipSiblings(work) {
