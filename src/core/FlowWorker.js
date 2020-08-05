@@ -162,6 +162,7 @@ class FlowWorker {
     return this.currentWorkLoopPromise;
   }
 
+  // TODO: create a pause component
   pause() {
     this.terminate = true;
     return this.currentWorkLoopPromise;

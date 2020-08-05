@@ -31,7 +31,7 @@ describe("Do", () => {
 
     await doComponent.execute();
     await doComponent.execute();
-    expect(context.workStack).toHaveLength(3);
+    expect(context.workStack).toHaveLength(2);
   });
 
   it("does loop twice when condition succeed", async () => {

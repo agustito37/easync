@@ -57,4 +57,5 @@ export default class Component {
   }
 };
 
+// FIX: must end with '__' cause a potential bug on the Regenerator Runtime (?)
 Component.prototype.__isEasyncClass__ = true;

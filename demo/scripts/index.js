@@ -6,9 +6,9 @@ import Switch from "@components/Switch";
 import Parallel from "@components/Parallel";
 import Evaluate from "@components/Evaluate";
 
-let flag = true;
-
 const Flow = () => {
+  let flag = true;
+  
   const condition = async () => {
     await sleep(2000);
     console.log(`Conditional executed: ${true}`);

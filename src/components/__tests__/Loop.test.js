@@ -30,6 +30,6 @@ describe("Loop", () => {
     const loop = new Loop(currentWork, context);
 
     await loop.execute();
-    expect(context.workStack).toHaveLength(1);
+    expect(context.workStack).toHaveLength(0);
   });
 });
