@@ -88,4 +88,20 @@ describe("FlowWorker", () => {
     await worker.start();
     expect(testTask).toBeCalledTimes(2);
   });
+
+  it("executes in parallel", async () => {
+    const testTask = jest.fn();
+    const node = htm`
+      <>
+        <${testTask} />
+        <${testTask} />
+      <//>
+    `;
+    node.child.__inParallel = true;
+
+    const worker = new FlowWorker(node);
+
+    await worker.start();
+    expect(testTask).toBeCalledTimes(2);
+  });
 });

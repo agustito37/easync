@@ -33,7 +33,8 @@ const Flow = () => {
     }
   };
 
-  const Task = (props) => {
+  const Task = async (props) => {
+    await sleep(props.name === 'task1' ? 1000 : 2000);
     console.log(`Task executed: ${props.name}`);
     return 1;
   };
@@ -43,9 +44,11 @@ const Flow = () => {
   };
 
   return Easync.create`
-    <${Do} while=${condition}>
-      <${Task} name="task1" />
-      <${Task} name="task2" />
+    <${Loop} while=${condition}>
+      <${Parallel} merge=${merge}>
+        <${Task} name="task1" />
+        <${Task} name="task2" />
+      <//>
     <//>
   `;
 };

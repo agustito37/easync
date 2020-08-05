@@ -11,6 +11,8 @@ class FlowWorker {
     this.log = false;
   }
 
+  // TODO: create a parallel attribute (parallel=true) instead of using a component
+  // something as: if work.props.parallel should work the same as current __inParallel
   isParallel(work) {
     return !!(work && work.__inParallel);
   }
@@ -70,19 +72,23 @@ class FlowWorker {
   async executeParallel(work) {
     let parallelWork = [];
     let sibling = work;
-
+    
     while (sibling) {
       // TODO: improve these propagated mutations
       sibling.__skipSiblings = true;
-      sibling.__inParallel = false;
       parallelWork.push(sibling);
       sibling = sibling.sibling;
     }
+
+    // remove parallel property momentarily to avoid an infinite loop
+    work.__inParallel = false;
 
     // TODO: race condition on context reference; shared between parallel work
     const outputs = await Promise.all(
       parallelWork.map((current) => this.nextWork(current, this.context.workStack))
     );
+    work.__inParallel = true;
+
     const mergeFn = work.parent.props && work.parent.props.merge;
     if (mergeFn) this.context.output = mergeFn(outputs);
   }
