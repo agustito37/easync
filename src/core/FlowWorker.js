@@ -69,7 +69,7 @@ class FlowWorker {
     return result;
   }
 
-  async executeParallel(work) {
+  async executeInParallel(work) {
     let parallelWork = [];
     let sibling = work;
     
@@ -85,7 +85,7 @@ class FlowWorker {
 
     // TODO: race condition on context reference; shared between parallel work
     const outputs = await Promise.all(
-      parallelWork.map((current) => this.nextWork(current, this.context.workStack))
+      parallelWork.map((current) => this.nextWork(current))
     );
     work.__inParallel = true;
 
@@ -106,23 +106,24 @@ class FlowWorker {
       __cache: to memoize subflows
     }
   */
-  async startWorkLoop(context = {}, workStack = [this.flow]) {
-    this.terminate = false;
+  async startWorkLoop(context = { workStack: [this.flow()] }) {
     this.context = context;
-    this.context.workStack = workStack;
 
-    while (workStack.length && !this.terminate) {
-      const currentWork = workStack.pop();
-      await this.nextWork(currentWork, workStack);
+    this.terminate = false;
+    while (context.workStack.length && !this.terminate) {
+      const work = context.workStack.pop();
+      await this.nextWork(work);
     }
   } 
 
-  async nextWork(work, workStack) {
+  async nextWork(work) {
     if (!work) return;
+
+    const workStack = this.context.workStack;
     
     // parallel work
     if (this.isParallel(work)) {
-      await this.executeParallel(work);
+      await this.executeInParallel(work);
       return;
     }
 
@@ -163,25 +164,29 @@ class FlowWorker {
     }
   }
 
-  start() {
+  start(flow) {
+    if (flow) this.flow = flow;
     this.currentWorkLoopPromise = this.startWorkLoop();
     return this.currentWorkLoopPromise;
   }
 
-  // TODO: create a pause component
+  // TODO: create a pause component (?)
   pause() {
     this.terminate = true;
     return this.currentWorkLoopPromise;
   }
 
   resume() {
-    this.currentWorkLoopPromise = this.startWorkLoop(this.context, this.context.workStack);
+    this.currentWorkLoopPromise = this.startWorkLoop(this.context);
     return this.currentWorkLoopPromise;
   }
 
-  abort() {
+  async abort() {
     this.terminate = true;
-    return this.currentWorkLoopPromise;
+    await this.currentWorkLoopPromise;
+
+    // FIX: resume after abort should restart the flow
+    this.context = undefined;
   }
 
   // TODO: implement save controls

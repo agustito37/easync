@@ -45,10 +45,8 @@ const Flow = () => {
 
   return Easync.create`
     <${Loop} while=${condition}>
-      <${Parallel} merge=${merge}>
-        <${Task} name="task1" />
-        <${Task} name="task2" />
-      <//>
+      <${Task} name="task1" />
+      <${Task} name="task2" />
     <//>
   `;
 };
