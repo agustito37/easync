@@ -52,4 +52,6 @@ const Flow = () => {
 };
 
 Easync.start(Flow);
+
+// for test purposes
 window.Easync = Easync;

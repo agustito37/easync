@@ -6,53 +6,56 @@ import NotImplementedError from '@utils/NotImplementedError';
 describe("FlowWorker", () => {
   it("starts a flow", async () => {
     const testTask = jest.fn();
-    const node = htm`<${testTask} />`;
+    const flow = () => htm`<${testTask} />`;
 
-    const worker = new FlowWorker(node);
+    const worker = new FlowWorker(flow);
 
     await worker.start();
     expect(testTask).toBeCalledTimes(1);
   });
 
   it("executes a component", () => {
-    const node = htm`<${Component} />`;
+    const flow = () => htm`<${Component} />`;
+    const firstNode = flow();
 
-    const worker = new FlowWorker(node);
+    const worker = new FlowWorker(flow);
 
-    expect(() => worker.executeMemoized(node)).rejects.toThrow(NotImplementedError);
+    expect(() => worker.executeMemoized(firstNode)).rejects.toThrow(NotImplementedError);
   });
 
   it("performs a task", async () => {
     const testTask = jest.fn();
-    const node = htm`<${testTask} />`;
+    const flow = () => htm`<${testTask} />`;
+    const firstNode = flow();
 
-    const worker = new FlowWorker(node);
+    const worker = new FlowWorker(flow);
 
-    await worker.performMemoized(node);
+    await worker.performMemoized(firstNode);
     expect(testTask).toBeCalledTimes(1);
   });
 
   it("performs a subflow", async () => {
     const testTask = jest.fn();
     const testSubFlow = () => htm`<${testTask} />`;
-    const node = htm`<${testSubFlow} />`;
+    const flow = () => htm`<${testSubFlow} />`;
+    const firstNode = flow();
 
-    const worker = new FlowWorker(node);
+    const worker = new FlowWorker(flow);
 
-    const innerWork = await worker.performMemoized(node);
+    const innerWork = await worker.performMemoized(firstNode);
     await worker.performMemoized(innerWork);
     expect(testTask).toBeCalledTimes(1);
   });
 
   it("work over a fragment", async () => {
     const testTask = jest.fn();
-    const node = htm`
+    const flow = () => htm`
       <>
         <${testTask} />
       <//>
     `;
 
-    const worker = new FlowWorker(node);
+    const worker = new FlowWorker(flow);
 
     await worker.start();
     expect(testTask).toBeCalledTimes(1);
@@ -60,23 +63,25 @@ describe("FlowWorker", () => {
 
   it("skip siblings if set", async () => {
     const testTask = jest.fn();
-    const node = htm`
+    const flow = () => htm`
       <>
         <${testTask} />
         <${testTask} />
       <//>
     `;
-    node.child.__skipSiblings = true;
+    const firstNode = flow();
+    firstNode.child.__skipSiblings = true;
+    const context = { workStack: [firstNode] };
 
-    const worker = new FlowWorker(node);
+    const worker = new FlowWorker(flow);
 
-    await worker.start();
+    await worker.startWorkLoop(context);
     expect(testTask).toBeCalledTimes(1);
   });
 
   it("does not skip siblings by default", async () => {
     const testTask = jest.fn();
-    const node = htm`
+    const node = () => htm`
       <>
         <${testTask} />
         <${testTask} />
@@ -91,17 +96,20 @@ describe("FlowWorker", () => {
 
   it("executes in parallel", async () => {
     const testTask = jest.fn();
-    const node = htm`
+    const flow = () => htm`
       <>
         <${testTask} />
         <${testTask} />
       <//>
     `;
-    node.child.__inParallel = true;
+    const firstNode = flow();
+    firstNode.child.__skipSiblings = true;
+    const context = { workStack: [firstNode] };
+    firstNode.child.__inParallel = true;
 
-    const worker = new FlowWorker(node);
+    const worker = new FlowWorker(flow);
 
-    await worker.start();
+    await worker.startWorkLoop(context);
     expect(testTask).toBeCalledTimes(2);
   });
 });

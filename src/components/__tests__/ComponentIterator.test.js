@@ -17,6 +17,21 @@ describe("ComponentIterator", () => {
     expect(testPush).toBeCalledTimes(1);
   });
 
+  it("parallel siblings call", async () => {
+    const testParallel= jest.fn();
+    const currentWork = htm`
+      <>
+        <h1 />
+        <h2 />
+      <//>
+    `;
+
+    const iterator = new ComponentIterator(currentWork, null, null, testParallel);
+
+    iterator.parallelSiblings();
+    expect(testParallel).toBeCalledTimes(1);
+  });
+
   it("skipSiblings being called", async () => {
     const testSkip = jest.fn();
     const currentWork = htm`
