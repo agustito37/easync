@@ -2,7 +2,7 @@
 
 #### A declarative approach to execute asynchronous tasks in javascript
 
-With easync.js you can define from simple to complex flows that involve loops, conditions and more. You can arrange user interactions, asynchronous server calls, process data in different steps or whatever you want to organize in a declarative way.
+With easync you can define from simple to complex flows that involve loops, conditions and more. You can arrange user interactions, asynchronous server calls, process data in different steps or whatever you want to organize in a declarative way.
 
 ## How it works?
 
@@ -39,3 +39,7 @@ For learning purpose we defined a simple loop with an async task inside. In this
 ```js
 easync.start(flow);
 ```
+
+### License
+
+easync is MIT licensed.
