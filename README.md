@@ -1,5 +1,9 @@
 <p align="center"><img src="resources/logo.png" /></p>
 
+<p align="center">
+  <img src="https://img.shields.io/github/license/Naereen/StrapDown.js.svg" />
+<p>
+
 #### A declarative approach to execute asynchronous tasks in javascript
 
 With easync you can define from simple to complex flows that involve loops, conditions and more. You can arrange user interactions, asynchronous server calls, process data in different steps or whatever you want to organize in a declarative way.
@@ -8,9 +12,9 @@ With easync you can define from simple to complex flows that involve loops, cond
 
 Just follow 3 steps:
 
-1. Install easync with `npm i easync`
+- Install easync with `npm i easync`
 
-2. Define your flow with inner tasks and conditions
+- Define your flow with inner tasks and conditions
 
 ```js
 import easync, { Loop } from "easync";
@@ -36,7 +40,7 @@ const flow = () => {
 
 For learning purpose we defined a simple loop with an async task inside. In this example we added an async function `sleep` before resolving the task and the condition to expose the asynchronous capabilities. You can work with non async functions too!
 
-3. Start the flow!
+- Start the flow!
 
 ```js
 easync.start(flow);
