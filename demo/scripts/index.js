@@ -1,4 +1,4 @@
-import easync, { Loop } from "../dist/easync.js";
+import easync, { Loop } from "../../index";
 import { sleep } from "@utils/helpers";
 
 const flow = () => {

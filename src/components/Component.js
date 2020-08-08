@@ -9,9 +9,13 @@ export default class Component {
   }
   
   async evaluate(condition) {
+    // TODO: add cache to output of condition
+    // maybe an attribute cache=true on the component
     return condition(this.context);
   }
 
+  // TODO: create a queue and reverse it, so developers don't end up
+  // dealing with stacks that seem less natural as queues when using
   onPush(work) {
     this.context.workStack.push(work); 
   }
@@ -27,6 +31,16 @@ export default class Component {
   current() {
     return new ComponentIterator(
       this.currentWork, 
+      this.onPush.bind(this), 
+      this.onSkipSiblings, 
+      this.onParallelSiblings
+    );
+  }
+
+  // TODO: add parent test
+  parent() {
+    return new ComponentIterator(
+      this.currentWork.parent, 
       this.onPush.bind(this), 
       this.onSkipSiblings, 
       this.onParallelSiblings

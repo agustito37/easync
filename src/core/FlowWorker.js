@@ -14,7 +14,7 @@ class FlowWorker {
     this.log = false;
   }
 
-  // TODO: create a parallel attribute (parallel=true) instead of using a component
+  // TODO: create a parallel prop (parallel=true) instead of using a component
   // something as: if work.props.parallel should work the same as current __inParallel
   isParallel(work) {
     return !!(work && work.__inParallel);
@@ -60,6 +60,7 @@ class FlowWorker {
   async performMemoized(work) {
     let result;
 
+    // TODOL add cache prop for tasks too
     if (work.__cache) {
       result = work.__cache;
     } else {

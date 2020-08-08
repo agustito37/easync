@@ -1,11 +1,11 @@
 {
   "name": "easync",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "A declarative approach to execute asynchronous tasks in javascript",
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack --config webpack/webpack.config.prod.js --colors",
     "start": "webpack-dev-server --config webpack/webpack.config.dev.js",
-    "start:server": "node demo/server.js",
+    "start:server": "npm run build && node demo/server.js",
     "test": "jest --verbose",
     "test:watch": "jest --verbose --watch"
   },

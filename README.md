@@ -6,9 +6,11 @@ With easync you can define from simple to complex flows that involve loops, cond
 
 ## How it works?
 
-Just follow 2 steps:
+Just follow 3 steps:
 
-1. Define your flow with inner tasks and conditions
+1. Install easync with `npm i easync`
+
+2. Define your flow with inner tasks and conditions
 
 ```js
 import easync, { Loop } from "easync";
@@ -34,11 +36,13 @@ const flow = () => {
 
 For learning purpose we defined a simple loop with an async task inside. In this example we added an async function `sleep` before resolving the task and the condition to expose the asynchronous capabilities. You can work with non async functions too!
 
-2. Start the flow!
+3. Start the flow!
 
 ```js
 easync.start(flow);
 ```
+
+If you want to learn more about all the things you can do with easync, check the [User Guide](./USER_GUIDE.md)
 
 ### License
 

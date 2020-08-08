@@ -1,8 +1,8 @@
 import Component from './Component';
 
 export default class Do extends Component {
-  constructor(currentWork, context) {
-    super(currentWork, context);
+  constructor(work, context) {
+    super(work, context);
 
     this.state = { counter: 0 };
   }
@@ -21,7 +21,7 @@ export default class Do extends Component {
       return;
     } 
 
-    // reset counter for next time is called
+    // reset counter for next time
     this.state.counter = 0;
     this.next().push();
   }
