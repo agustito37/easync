@@ -1,32 +1,41 @@
-# Webpack Frontend Starterkit
+<p align="center"><img src="resources/logo.png" /></p>
 
-[![Dependabot badge](https://flat.badgen.net/dependabot/wbkd/webpack-starter?icon=dependabot)](https://dependabot.com/)
+#### A declarative approach to execute asynchronous tasks in javascript
 
-A lightweight foundation for your next webpack based frontend project.
+With easync.js you can define from simple to complex flows that involve loops, conditions and more. You can arrange user interactions, asynchronous server calls, process data in different steps or whatever you want to organize in a declarative way.
 
+## How it works?
 
-### Installation
+Just follow 2 steps:
 
+1. Define your flow with inner tasks and conditions
+
+```js
+import easync, { Loop } from "easync";
+
+const flow = () => {
+  const asyncCondition = async () => {
+    await sleep(1000);
+    return true;
+  };
+
+  const asyncTask = async () => {
+    await sleep(1000);
+    return 1;
+  };
+
+  return easync.create`
+    <${Loop} while=${asyncCondition}>
+      <${asyncTask} />
+    <//>
+  `;
+};
 ```
-npm install
+
+For learning purpose we defined a simple loop with an async task inside. In this example we added an async function `sleep` before resolving the task and the condition to expose the asynchronous capabilities. You can work with non async functions too!
+
+2. Start the flow!
+
+```js
+easync.start(flow);
 ```
-
-### Start Dev Server
-
-```
-npm start
-```
-
-### Build Prod Version
-
-```
-npm run build
-```
-
-### Features:
-
-* ES6 Support via [babel](https://babeljs.io/) (v7)
-* SASS Support via [sass-loader](https://github.com/jtangelder/sass-loader)
-* Linting via [eslint-loader](https://github.com/MoOx/eslint-loader)
-
-When you run `npm run build` we use the [mini-css-extract-plugin](https://github.com/webpack-contrib/mini-css-extract-plugin) to move the css to a separate file. The css file gets included in the head of the `index.html`.
