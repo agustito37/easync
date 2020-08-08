@@ -1,6 +1,9 @@
 import FlowWorker from "@core/FlowWorker";
 import htm from "@core/VNode";
 
+// TODO: async/await usage makes babel to include the Regenerator Runtime
+// this is a heavy package, should improve this.
+
 export * from "@components";
 
 let worker = new FlowWorker();

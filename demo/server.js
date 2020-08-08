@@ -1,5 +1,8 @@
-import easync, { Loop } from "../dist/easync.js";
-import { sleep } from "@utils/helpers";
+const { default: easync, Loop } = require("../dist/easync");
+
+const sleep = (ms) => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+};
 
 const flow = () => {
   const asyncCondition = async () => {
@@ -22,6 +25,3 @@ const flow = () => {
 };
 
 easync.start(flow);
-
-// for test purposes
-window.easync = easync;
