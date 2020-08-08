@@ -4,11 +4,65 @@ import Component from '@components/Component';
 import NotImplementedError from '@utils/NotImplementedError';
 
 describe("FlowWorker", () => {
+  let worker;
+
   it("starts a flow", async () => {
     const testTask = jest.fn();
     const flow = () => htm`<${testTask} />`;
 
-    const worker = new FlowWorker(flow);
+    worker = new FlowWorker(flow);
+
+    await worker.start();
+    expect(testTask).toBeCalledTimes(1);
+  });
+
+  it("pauses a flow", async () => {
+    const testTask = jest.fn(async () => {
+      worker.pause();
+    });
+    const flow = () => htm`
+      <>
+        <${testTask} />
+        <${testTask} />
+      <//>
+    `;
+
+    worker = new FlowWorker(flow);
+
+    await worker.start();
+    expect(testTask).toBeCalledTimes(1);
+  });
+
+  it("resumes the flow", async () => {
+    const testTask = jest.fn(async () => {
+      worker.pause();
+    });
+    const flow = () => htm`
+      <>
+        <${testTask} />
+        <${testTask} />
+      <//>
+    `;
+
+    worker = new FlowWorker(flow);
+
+    await worker.start();
+    await worker.resume();
+    expect(testTask).toBeCalledTimes(2);
+  });
+
+  it("aborts a flow", async () => {
+    const testTask = jest.fn(async () => {
+      worker.abort();
+    });
+    const flow = () => htm`
+      <>
+        <${testTask} />
+        <${testTask} />
+      <//>
+    `;
+
+    worker = new FlowWorker(flow);
 
     await worker.start();
     expect(testTask).toBeCalledTimes(1);
@@ -18,7 +72,7 @@ describe("FlowWorker", () => {
     const flow = () => htm`<${Component} />`;
     const firstNode = flow();
 
-    const worker = new FlowWorker(flow);
+    worker = new FlowWorker(flow);
 
     expect(() => worker.executeMemoized(firstNode)).rejects.toThrow(NotImplementedError);
   });
@@ -28,7 +82,7 @@ describe("FlowWorker", () => {
     const flow = () => htm`<${testTask} />`;
     const firstNode = flow();
 
-    const worker = new FlowWorker(flow);
+    worker = new FlowWorker(flow);
 
     await worker.performMemoized(firstNode);
     expect(testTask).toBeCalledTimes(1);
@@ -40,14 +94,14 @@ describe("FlowWorker", () => {
     const flow = () => htm`<${testSubFlow} />`;
     const firstNode = flow();
 
-    const worker = new FlowWorker(flow);
+    worker = new FlowWorker(flow);
 
     const innerWork = await worker.performMemoized(firstNode);
     await worker.performMemoized(innerWork);
     expect(testTask).toBeCalledTimes(1);
   });
 
-  it("work over a fragment", async () => {
+  it("works over a fragment", async () => {
     const testTask = jest.fn();
     const flow = () => htm`
       <>
@@ -55,13 +109,13 @@ describe("FlowWorker", () => {
       <//>
     `;
 
-    const worker = new FlowWorker(flow);
+    worker = new FlowWorker(flow);
 
     await worker.start();
     expect(testTask).toBeCalledTimes(1);
   });
 
-  it("skip siblings if set", async () => {
+  it("skips siblings if set", async () => {
     const testTask = jest.fn();
     const flow = () => htm`
       <>
@@ -73,7 +127,7 @@ describe("FlowWorker", () => {
     firstNode.child.__skipSiblings = true;
     const context = { workStack: [firstNode] };
 
-    const worker = new FlowWorker(flow);
+    worker = new FlowWorker(flow);
 
     await worker.startWorkLoop(context);
     expect(testTask).toBeCalledTimes(1);
@@ -88,7 +142,7 @@ describe("FlowWorker", () => {
       <//>
     `;
 
-    const worker = new FlowWorker(node);
+    worker = new FlowWorker(node);
 
     await worker.start();
     expect(testTask).toBeCalledTimes(2);
@@ -107,7 +161,7 @@ describe("FlowWorker", () => {
     const context = { workStack: [firstNode] };
     firstNode.child.__inParallel = true;
 
-    const worker = new FlowWorker(flow);
+    worker = new FlowWorker(flow);
 
     await worker.startWorkLoop(context);
     expect(testTask).toBeCalledTimes(2);
