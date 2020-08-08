@@ -8,17 +8,21 @@
     "test": "jest --verbose",
     "test:watch": "jest --verbose --watch"
   },
+  "main": "index.js",
+  "files": [
+    "dist/**/*.{js,map}"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/agustito37/easync.git"
   },
   "keywords": [
-    "webpack",
-    "startkit",
-    "frontend",
-    "es6",
-    "javascript",
-    "webdev"
+    "easync",
+    "async",
+    "task",
+    "runner",
+    "components",
+    "javascript"
   ],
   "author": "webkid.io",
   "license": "MIT",

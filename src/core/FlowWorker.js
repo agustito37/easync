@@ -1,5 +1,8 @@
 import Component from "@components/Component";
 
+// TODO: add FlowWorker onFinish when all work is finished
+// take into consideration when the user pauses or aborts
+
 class FlowWorker {
   constructor(flow) {
     this.flow = flow;

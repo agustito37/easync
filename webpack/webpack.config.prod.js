@@ -5,7 +5,7 @@ const common = require('./webpack.common.js');
 
 module.exports = merge(common, {
   entry: {
-    easync: Path.resolve(__dirname, '../src/core/easync.js'),
+    easync: Path.resolve(__dirname, '../index.js'),
   },
   mode: 'production',
   devtool: 'source-map',
