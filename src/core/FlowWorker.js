@@ -1,17 +1,18 @@
 import Component from "@components/Component";
+import Logger from "@core/Logger";
+import WorkTag from "@core/WorkTag";
 
 // TODO: add FlowWorker onFinish when all work is finished
 // take into consideration when the user pauses or aborts
+// TODO: add work type tag to current work so it can be shared with the logger
 
 class FlowWorker {
-  constructor(flow) {
+  constructor(flow, logger = true) {
     this.flow = flow;
     this.context;
     this.currentWorkLoopPromise;
     this.terminate = false;
-
-    // TODO: implement logger
-    this.log = false;
+    this.log = Logger;
   }
 
   // TODO: create a parallel prop (parallel=true) instead of using a component
@@ -41,6 +42,7 @@ class FlowWorker {
   }
 
   executeMemoized(work) {
+    this.log && Logger.log(WorkTag.Component, work);
     let component;
 
     if (work.__instance) {
@@ -54,13 +56,24 @@ class FlowWorker {
   }
 
   async perform(work) {
-    return work.type(work.props, this.context);
+    const result = work.type(work.props, this.context);
+
+    // we can't be sure if it's a subflow before executing
+    if (this.log) {
+      if (this.isSubFlow(result)) {
+        Logger.log(WorkTag.Subflow, work);
+      } else {
+        Logger.log(WorkTag.Task, work);
+      }
+    }
+
+    return result;
   }
 
   async performMemoized(work) {
     let result;
 
-    // TODOL add cache prop for tasks too
+    // TODO add cache prop for tasks too with cache=true prop
     if (work.__cache) {
       result = work.__cache;
     } else {
@@ -76,7 +89,7 @@ class FlowWorker {
   async executeInParallel(work) {
     let parallelWork = [];
     let sibling = work;
-    
+
     while (sibling) {
       // TODO: improve these propagated mutations
       sibling.__skipSiblings = true;
@@ -110,7 +123,7 @@ class FlowWorker {
       __cache: to memoize subflows
     }
   */
-  async startWorkLoop(context = { workStack: [this.flow()] }) {
+  async startWorkLoop(context = { workStack: [this.flow()], worker: this }) {
     this.context = context;
 
     this.terminate = false;
@@ -118,13 +131,13 @@ class FlowWorker {
       const work = context.workStack.pop();
       await this.nextWork(work);
     }
-  } 
+  }
 
   async nextWork(work) {
     if (!work) return;
 
     const workStack = this.context.workStack;
-    
+
     // parallel work
     if (this.isParallel(work)) {
       await this.executeInParallel(work);

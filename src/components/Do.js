@@ -1,4 +1,4 @@
-import Component from './Component';
+import Component from "./Component";
 
 export default class Do extends Component {
   constructor(work, context) {
@@ -19,10 +19,10 @@ export default class Do extends Component {
       this.current().push();
       this.child().push();
       return;
-    } 
+    }
 
     // reset counter for next time
     this.state.counter = 0;
     this.next().push();
   }
-};
+}
