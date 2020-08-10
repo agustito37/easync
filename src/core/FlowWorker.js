@@ -1,5 +1,7 @@
 import Component from "@components/Component";
 
+// TODO: async/await usage makes babel to include the Regenerator Runtime
+// this is a heavy package, should improve this.
 // TODO: add FlowWorker onFinish when all work is finished
 // take into consideration when the user pauses or aborts
 
