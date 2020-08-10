@@ -1,4 +1,4 @@
-const { default: easync, Loop } = require("../dist/easync");
+const { easync, Loop } = require("../dist/easync");
 
 const sleep = (ms) => {
   return new Promise((resolve) => setTimeout(resolve, ms));

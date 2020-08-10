@@ -61,6 +61,14 @@ easync.start(flow);
 
 If you want to learn more about all the things you can do with easync, check the [User Guide](./USER_GUIDE.md)
 
+### Node usage
+
+```js
+const { easync, Loop, Switch } = require("easync");
+```
+
+You can use it in a Node server environment importing the library as you can see in the above example.
+
 ### License
 
 easync is MIT licensed.

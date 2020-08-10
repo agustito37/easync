@@ -4,7 +4,7 @@ import htm from "@core/VNode";
 export * from "@components";
 
 let worker = new FlowWorker();
-export default {
+export const easync = {
   instance: (flow) => new FlowWorker(flow),
   start: (flow) => worker.start(flow),
   pause: () => worker.pause(),
@@ -13,4 +13,6 @@ export default {
   save: () => worker.save(),
   load: () => worker.load(),
   create: htm,
-};
+};;
+
+export default easync;
