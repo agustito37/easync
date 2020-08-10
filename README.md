@@ -17,7 +17,7 @@ Just follow 3 steps:
 - Define your flow with inner tasks and conditions
 
 ```js
-import easync, { Loop } from "easync";
+import easync, { Loop, Switch } from "easync";
 
 const flow = () => {
   const asyncCondition = async () => {
@@ -25,20 +25,33 @@ const flow = () => {
     return true;
   };
 
+  const condition = () => {
+    return "Luke";
+  };
+
   const asyncTask = async () => {
     await sleep(1000);
     return 1;
   };
 
+  const task = () => {
+    return 1;
+  };
+
   return easync.create`
     <${Loop} while=${asyncCondition}>
-      <${asyncTask} />
+      <${Switch} condition=${condition}>
+        <${asyncTask} case="Ash" />
+        <${task} case="Luke" />
+      <//>
     <//>
   `;
 };
 ```
 
-For learning purpose we defined a simple loop with an async task inside. In this example we added an async function `sleep` before resolving the task and the condition to expose the asynchronous capabilities. You can work with non async functions too!
+For learning purposes we defined a flow with a Loop that iterates over a Switch that chooses the second Task. In this example we added an async function `sleep` before resolving the async task and the async condition to expose the asynchronous capabilities.
+
+Now you can work with sync and async tasks and conditions!
 
 - Start the flow!
 

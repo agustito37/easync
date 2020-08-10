@@ -1,5 +1,6 @@
 import Component from "@components/Component";
 
+// TODO: define a default value for the context input
 // TODO: async/await usage makes babel to include the Regenerator Runtime
 // this is a heavy package, should improve this.
 // TODO: add FlowWorker onFinish when all work is finished
@@ -62,7 +63,7 @@ class FlowWorker {
   async performMemoized(work) {
     let result;
 
-    // TODOL add cache prop for tasks too
+    // TODO: add cache prop for tasks too
     if (work.__cache) {
       result = work.__cache;
     } else {
@@ -78,7 +79,7 @@ class FlowWorker {
   async executeInParallel(work) {
     let parallelWork = [];
     let sibling = work;
-    
+
     while (sibling) {
       // TODO: improve these propagated mutations
       sibling.__skipSiblings = true;
@@ -120,13 +121,13 @@ class FlowWorker {
       const work = context.workStack.pop();
       await this.nextWork(work);
     }
-  } 
+  }
 
   async nextWork(work) {
     if (!work) return;
 
     const workStack = this.context.workStack;
-    
+
     // parallel work
     if (this.isParallel(work)) {
       await this.executeInParallel(work);
@@ -151,7 +152,8 @@ class FlowWorker {
 
       // task
       else {
-        this.context.input = output;
+        // TODO: create input/output tests
+        this.context.input = output !== undefined ? output : this.context.input;
 
         if (work.__skipSiblings) {
           work.__skipSiblings = false;
